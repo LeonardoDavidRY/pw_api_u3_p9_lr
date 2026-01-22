@@ -20,49 +20,49 @@ public class MateriaResource {
     private MateriaService materiaService;
 
     @GET
-    @Path("/todos")
+    @Path("")
     public List<Materia> listarTodos() {
         return this.materiaService.listarTodos();
     }
     
     @GET
-    @Path("/consultarPorId/{id}")
+    @Path("/{id}")
     public Materia consultarPorId(@PathParam("id") Integer id) {
         return this.materiaService.consultarPorId(id);
     }
 
     @GET
-    @Path("/consultarPorCodigo/{codigo}")
+    @Path("/{codigo}")
     public Materia consultarPorCodigo(@PathParam("codigo") String codigo) {
         return this.materiaService.consultarPorCodigo(codigo);
     }
 
     @POST
-    @Path("/crear")
+    @Path("")
     public void guardarMateria(Materia materia) {
         this.materiaService.crearMateria(materia);
     }
 
     @PUT
-    @Path("/actualizar/{id}")
+    @Path("/{id}")
     public void actualizarMateria(@PathParam("id") Integer id, Materia materia) {
         this.materiaService.actualizarMateria(id, materia);
     }
 
     @PATCH
-    @Path("/actualizarParcial/{id}")
+    @Path("/{id}")
     public void actualizarParcialMateria(@PathParam("id") Integer id, Materia materia) {
         this.materiaService.actualizarParcialMateria(id, materia);
     }
 
     @DELETE
-    @Path("/borrar/{id}")
+    @Path("/{id}")
     public void borrarMateria(@PathParam("id") Integer id) {
         this.materiaService.eliminarMateria(id);
     }
 
     @DELETE
-    @Path("/borrarPorCodigo/{codigo}")
+    @Path("/{codigo}")
     public void borrarPorCodigo(@PathParam("codigo") String codigo) {
         this.materiaService.eliminarPorCodigo(codigo);
     }
