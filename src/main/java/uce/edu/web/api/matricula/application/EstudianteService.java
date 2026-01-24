@@ -1,10 +1,14 @@
 package uce.edu.web.api.matricula.application;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import org.hibernate.mapping.Array;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import uce.edu.web.api.matricula.application.representation.EstudianteRepresentation;
 import uce.edu.web.api.matricula.domain.Estudiante;
 import uce.edu.web.api.matricula.infraestructure.EstudianteRepository;
 
@@ -14,20 +18,25 @@ public class EstudianteService {
     @Inject
     private EstudianteRepository estudianteRepository;
 
-    public List<Estudiante> listarTodos() {
-        return estudianteRepository.listAll();
+    public List<EstudianteRepresentation> listarTodos() {
+        List<EstudianteRepresentation> list = new ArrayList<>();
+        for (Estudiante est : this.estudianteRepository.listAll()) {
+            list.add(this.mapperToER(est));
+        }
+        return list;
     }
-    public Estudiante consultarPorId(Integer id) {
-        return estudianteRepository.findById(id.longValue());
+    public EstudianteRepresentation consultarPorId(Integer id) {
+        return this.mapperToER(estudianteRepository.findById(id.longValue()));
     }
+
     @Transactional
     public void crearEstudiante(Estudiante estudiante) {
         this.estudianteRepository.persist(estudiante);
     }
 
     @Transactional
-    public void actualizarEstudiante(Integer id, Estudiante estudiante) {
-        Estudiante est = this.consultarPorId(id);
+    public void actualizarEstudiante(Integer id, EstudianteRepresentation estudiante) {
+        Estudiante est = this.mapperToE(this.consultarPorId(id));
 
         est.setNombre(estudiante.getNombre());
         est.setApellido(estudiante.getApellido());  
@@ -38,8 +47,8 @@ public class EstudianteService {
     }
 
     @Transactional
-    public void actualizarParcialEstudiante(Integer id, Estudiante estudiante) {
-        Estudiante est = this.consultarPorId(id);
+    public void actualizarParcialEstudiante(Integer id, EstudianteRepresentation estudiante) {
+        Estudiante est = this.mapperToE(this.consultarPorId(id));
 
         if (estudiante.getNombre() != null) {
             est.setNombre(estudiante.getNombre());
@@ -64,8 +73,32 @@ public class EstudianteService {
         this.estudianteRepository.deleteById(id.longValue());
     }
 
-    public List<Estudiante> buscarPorProvincia(String provincia, String genero) {
-        return this.estudianteRepository.find("provincia = ?1 and genero = ?2", provincia, genero).list();
+    public List<EstudianteRepresentation> buscarPorProvincia(String provincia, String genero) {
+        return this.estudianteRepository.find("provincia = ?1 and genero = ?2", provincia, genero).stream()
+                .map(this::mapperToER)
+                .toList();
+    }
+
+    private EstudianteRepresentation mapperToER (Estudiante estudiante){
+        EstudianteRepresentation rep = new EstudianteRepresentation();
+        rep.setId(estudiante.getId());
+        rep.setNombre(estudiante.getNombre());
+        rep.setApellido(estudiante.getApellido());
+        rep.setFechaNacimiento(estudiante.getFechaNacimiento());
+        rep.setProvincia(estudiante.getProvincia());
+        rep.setGenero(estudiante.getGenero());
+        return rep;
+    }
+
+    private Estudiante mapperToE (EstudianteRepresentation rep){
+        Estudiante estudiante = new Estudiante();
+        estudiante.setId(rep.getId());
+        estudiante.setNombre(rep.getNombre());
+        estudiante.setApellido(rep.getApellido());
+        estudiante.setFechaNacimiento(rep.getFechaNacimiento());
+        estudiante.setProvincia(rep.getProvincia());
+        estudiante.setGenero(rep.getGenero());
+        return estudiante;
     }
 
 

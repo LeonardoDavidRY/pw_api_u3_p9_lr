@@ -1,12 +1,16 @@
 package uce.edu.web.api.matricula.domain;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.xml.bind.annotation.XmlRootElement;
@@ -24,6 +28,9 @@ public class Estudiante extends PanacheEntityBase{
     private LocalDateTime fechaNacimiento;
     private String provincia;
     private String genero;
+
+    @OneToMany(mappedBy = "estudiante", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Hijo> hijos;
 
     public String getGenero() {
         return genero;
@@ -60,5 +67,11 @@ public class Estudiante extends PanacheEntityBase{
     }
     public void setFechaNacimiento(LocalDateTime fechaNacimiento) {
         this.fechaNacimiento = fechaNacimiento;
+    }
+    public List<Hijo> getHijos() {
+        return hijos;
+    }
+    public void setHijos(List<Hijo> hijos) {
+        this.hijos = hijos;
     }
 }
