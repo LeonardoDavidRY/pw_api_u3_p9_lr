@@ -18,8 +18,7 @@ import jakarta.ws.rs.core.Response;
 import uce.edu.web.api.matricula.application.EstudianteService;
 import uce.edu.web.api.matricula.application.HijoService;
 import uce.edu.web.api.matricula.application.representation.EstudianteRepresentation;
-import uce.edu.web.api.matricula.domain.Estudiante;
-import uce.edu.web.api.matricula.domain.Hijo;
+import uce.edu.web.api.matricula.application.representation.HijoRepresentation;
 
 @Path("/estudiantes")
 public class EstudianteResource {
@@ -58,7 +57,7 @@ public class EstudianteResource {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response actualizarEstudiante(@PathParam("id") Integer id, Estudiante estudiante) {
+    public Response actualizarEstudiante(@PathParam("id") Integer id, EstudianteRepresentation estudiante) {
         this.estudianteService.actualizarEstudiante(id, estudiante);
         return Response.status(209).entity(null).build();
     }
@@ -66,7 +65,7 @@ public class EstudianteResource {
     @PATCH
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void actualizarParcialEstudiante(@PathParam("id") Integer id, Estudiante estudiante) {
+    public void actualizarParcialEstudiante(@PathParam("id") Integer id, EstudianteRepresentation estudiante) {
         this.estudianteService.actualizarParcialEstudiante(id, estudiante);
     }
 
@@ -79,14 +78,15 @@ public class EstudianteResource {
     @GET
     @Path("/provincia/genero")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Estudiante> buscarPorProvincia(@QueryParam("provincia") String provincia, @QueryParam("genero") String genero) {
+    public List<EstudianteRepresentation> buscarPorProvincia(@QueryParam("provincia") String provincia, @QueryParam("genero") String genero) {
         System.out.println("Listando todos los estudiantes por provincia ######");
         return this.estudianteService.buscarPorProvincia(provincia, genero);
     }
 
     @GET
     @Path("/{id}/hijos")
-    public List<Hijo> buscarHijosPorEstudiante(@PathParam("id") Integer id) {
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<HijoRepresentation> buscarHijosPorEstudiante(@PathParam("id") Integer id) {
         return this.hijoService.buscarPorEstudianteId(id);
     }
 }

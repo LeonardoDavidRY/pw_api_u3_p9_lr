@@ -30,8 +30,8 @@ public class EstudianteService {
     }
 
     @Transactional
-    public void crearEstudiante(Estudiante estudiante) {
-        this.estudianteRepository.persist(estudiante);
+    public void crearEstudiante(EstudianteRepresentation estudiante) {
+        this.estudianteRepository.persist(this.mapperToE(estudiante));
     }
 
     @Transactional
