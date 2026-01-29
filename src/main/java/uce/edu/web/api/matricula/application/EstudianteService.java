@@ -3,8 +3,6 @@ package uce.edu.web.api.matricula.application;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.mapping.Array;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;

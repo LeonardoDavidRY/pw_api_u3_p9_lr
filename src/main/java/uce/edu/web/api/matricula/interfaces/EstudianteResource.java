@@ -13,12 +13,15 @@ import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
 import uce.edu.web.api.matricula.application.EstudianteService;
 import uce.edu.web.api.matricula.application.HijoService;
 import uce.edu.web.api.matricula.application.representation.EstudianteRepresentation;
 import uce.edu.web.api.matricula.application.representation.HijoRepresentation;
+import uce.edu.web.api.matricula.application.representation.LinkDto;
 
 @Path("/estudiantes")
 public class EstudianteResource {
@@ -29,19 +32,24 @@ public class EstudianteResource {
     @Inject
     private HijoService hijoService;
 
+    @Context
+    private UriInfo uriInfo;
+
     @GET
     @Path("")
     @Produces(MediaType.APPLICATION_JSON)
     public List<EstudianteRepresentation> listarTodos() {
         System.out.println("Listando todos los estudiantes ######");
-        return this.estudianteService.listarTodos();
+        List<EstudianteRepresentation> estudiantes = this.estudianteService.listarTodos();
+        estudiantes.forEach(estudiante -> construirLinks(estudiante));
+        return estudiantes;
     }
     
     @GET
     @Path("/{id}")
-    @Produces(MediaType.APPLICATION_XML)
+    @Produces(MediaType.APPLICATION_JSON)
     public EstudianteRepresentation consultarPorId(@PathParam("id") Integer id) {
-        return this.estudianteService.consultarPorId(id);
+        return this.construirLinks(this.estudianteService.consultarPorId(id));
     }
 
     @POST
@@ -88,6 +96,23 @@ public class EstudianteResource {
     @Produces(MediaType.APPLICATION_JSON)
     public List<HijoRepresentation> buscarHijosPorEstudiante(@PathParam("id") Integer id) {
         return this.hijoService.buscarPorEstudianteId(id);
+    }
+
+    private EstudianteRepresentation construirLinks(EstudianteRepresentation estudiante){
+        String self = uriInfo.getBaseUriBuilder()
+            .path(EstudianteResource.class)
+            .path(String.valueOf(estudiante.getId()))
+            .build().toString();
+
+        String hijos = uriInfo.getBaseUriBuilder()
+            .path(EstudianteResource.class)
+            .path(String.valueOf(estudiante.getId()))
+            .path("hijos")
+            .build().toString();
+
+
+        estudiante.links = List.of(new LinkDto(self, "self"), new LinkDto(hijos, "hijos"));
+        return estudiante;
     }
 }
 
