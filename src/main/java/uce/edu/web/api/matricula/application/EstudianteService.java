@@ -23,6 +23,7 @@ public class EstudianteService {
         }
         return list;
     }
+
     public EstudianteRepresentation consultarPorId(Integer id) {
         return this.mapperToER(estudianteRepository.findById(id.longValue()));
     }
@@ -34,36 +35,44 @@ public class EstudianteService {
 
     @Transactional
     public void actualizarEstudiante(Integer id, EstudianteRepresentation estudiante) {
-        Estudiante est = this.mapperToE(this.consultarPorId(id));
+        // Obtener la entidad directamente del repositorio (está en el contexto de
+        // persistencia)
+        Estudiante est = this.estudianteRepository.findById(id.longValue());
 
-        est.setNombre(estudiante.getNombre());
-        est.setApellido(estudiante.getApellido());  
-        est.setFechaNacimiento(estudiante.getFechaNacimiento());
-        est.setProvincia(estudiante.getProvincia());
-        est.setGenero(estudiante.getGenero());
-        //se actializa automaticamente por dirty checking
+        if (est != null) {
+            est.setNombre(estudiante.getNombre());
+            est.setApellido(estudiante.getApellido());
+            est.setFechaNacimiento(estudiante.getFechaNacimiento());
+            est.setProvincia(estudiante.getProvincia());
+            est.setGenero(estudiante.getGenero());
+            // Ahora sí se actualiza automáticamente por dirty checking
+        }
     }
 
     @Transactional
     public void actualizarParcialEstudiante(Integer id, EstudianteRepresentation estudiante) {
-        Estudiante est = this.mapperToE(this.consultarPorId(id));
+        // Obtener la entidad directamente del repositorio (está en el contexto de
+        // persistencia)
+        Estudiante est = this.estudianteRepository.findById(id.longValue());
 
-        if (estudiante.getNombre() != null) {
-            est.setNombre(estudiante.getNombre());
+        if (est != null) {
+            if (estudiante.getNombre() != null) {
+                est.setNombre(estudiante.getNombre());
+            }
+            if (estudiante.getApellido() != null) {
+                est.setApellido(estudiante.getApellido());
+            }
+            if (estudiante.getFechaNacimiento() != null) {
+                est.setFechaNacimiento(estudiante.getFechaNacimiento());
+            }
+            if (estudiante.getProvincia() != null) {
+                est.setProvincia(estudiante.getProvincia());
+            }
+            if (estudiante.getGenero() != null) {
+                est.setGenero(estudiante.getGenero());
+            }
+            // Ahora sí se actualiza automáticamente por dirty checking
         }
-        if (estudiante.getApellido() != null) {
-            est.setApellido(estudiante.getApellido());
-        }
-        if (estudiante.getFechaNacimiento() != null) {
-            est.setFechaNacimiento(estudiante.getFechaNacimiento());
-        }
-        if (estudiante.getProvincia() != null) {
-            est.setProvincia(estudiante.getProvincia());
-        }
-        if (estudiante.getGenero() != null) {
-            est.setGenero(estudiante.getGenero());
-        }
-        //se actializa automaticamente por dirty checking
     }
 
     @Transactional
@@ -77,7 +86,7 @@ public class EstudianteService {
                 .toList();
     }
 
-    private EstudianteRepresentation mapperToER (Estudiante estudiante){
+    private EstudianteRepresentation mapperToER(Estudiante estudiante) {
         EstudianteRepresentation rep = new EstudianteRepresentation();
         rep.setId(estudiante.getId());
         rep.setNombre(estudiante.getNombre());
@@ -88,7 +97,7 @@ public class EstudianteService {
         return rep;
     }
 
-    private Estudiante mapperToE (EstudianteRepresentation rep){
+    private Estudiante mapperToE(EstudianteRepresentation rep) {
         Estudiante estudiante = new Estudiante();
         estudiante.setId(rep.getId());
         estudiante.setNombre(rep.getNombre());
@@ -98,6 +107,5 @@ public class EstudianteService {
         estudiante.setGenero(rep.getGenero());
         return estudiante;
     }
-
 
 }
