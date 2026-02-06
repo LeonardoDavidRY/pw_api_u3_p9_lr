@@ -34,7 +34,7 @@ public class UsuarioResource {
     @GET
     @Path("")
     @Produces(MediaType.APPLICATION_JSON)
-    //@RolesAllowed("admin")
+    @RolesAllowed("admin")
     public List<UsuarioRepresentation> listarTodos() {
         System.out.println("Listando todos los usuarios ######");
         List<UsuarioRepresentation> usuarios = this.usuarioService.listarTodos();
@@ -45,7 +45,7 @@ public class UsuarioResource {
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    //@RolesAllowed("admin")
+    @RolesAllowed("admin")
     public UsuarioRepresentation consultarPorId(@PathParam("id") Integer id) {
         return this.construirLinks(this.usuarioService.consultarPorId(id));
     }
@@ -54,7 +54,7 @@ public class UsuarioResource {
     @Path("")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    //@RolesAllowed("admin")
+    @RolesAllowed("admin")
     public Response guardarUsuario(UsuarioRepresentation usuario) {
         this.usuarioService.crearUsuario(usuario);
         return Response.status(Response.Status.CREATED).entity(usuario).build();
@@ -64,7 +64,7 @@ public class UsuarioResource {
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    //@RolesAllowed("admin")
+    @RolesAllowed("admin")
     public Response actualizarUsuario(@PathParam("id") Integer id, UsuarioRepresentation usuario) {
         this.usuarioService.actualizarUsuario(id, usuario);
         return Response.status(209).entity(null).build();
@@ -73,14 +73,14 @@ public class UsuarioResource {
     @PATCH
     @Path("/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    //@RolesAllowed("admin")
+    @RolesAllowed("admin")
     public void actualizarParcialUsuario(@PathParam("id") Integer id, UsuarioRepresentation usuario) {
         this.usuarioService.actualizarParcialUsuario(id, usuario);
     }
 
     @DELETE
     @Path("/{id}")
-    //@RolesAllowed("admin")
+    @RolesAllowed("admin")
     public void borrarUsuario(@PathParam("id") Integer id) {
         this.usuarioService.eliminarUsuario(id);
     }
@@ -88,7 +88,7 @@ public class UsuarioResource {
     @GET
     @Path("/rol")
     @Produces(MediaType.APPLICATION_JSON)
-    //@RolesAllowed("admin")
+    @RolesAllowed("admin")
     public List<UsuarioRepresentation> buscarPorRol(@QueryParam("rol") String rol) {
         System.out.println("Listando todos los usuarios por rol ######");
         return this.usuarioService.buscarPorRol(rol);
